@@ -6,7 +6,7 @@ val CatsEffectVersion = "3.3.7"
 val Http4sVersion     = "0.23.10"
 val JawnVersion       = "1.3.2"
 val MUnitVersion      = "0.7.29"
-val Specs2Version = "4.10.5"
+val Specs2Version     = "4.10.5"
 
 val commonWarts = Seq(
   Wart.AsInstanceOf,
@@ -21,17 +21,17 @@ val commonWarts = Seq(
 )
 
 lazy val commonSettings = Seq(
-  organization                := "periskop4s",
-  scalaVersion                := "2.13.8",
-  run / fork                  := true,
+  organization        := "periskop4s",
+  scalaVersion        := "2.13.8",
+  run / fork          := true,
   addCompilerPlugin("org.typelevel" % "kind-projector"     % "0.13.2" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1" cross CrossVersion.binary),
   scalacOptions += "-Ymacro-annotations",
   scalacOptions += "-Xsource:3",
   Test / scalacOptions -= "-Xfatal-warnings",
   testFrameworks += new TestFramework("munit.Framework"),
-  scalafmtOnCompile           := true,
-  Global / cancelable         := true,
+  scalafmtOnCompile   := true,
+  Global / cancelable := true,
   javaOptions ++= Seq(
     "-XX:+UseG1GC",
     "-Xmx600m",
@@ -56,8 +56,8 @@ lazy val core = project
       /* "org.typelevel"            %% "cats-effect"                  % CatsEffectVersion, */
       "org.typelevel" %% "jawn-parser" % JawnVersion,
       "org.typelevel" %% "jawn-ast"    % JawnVersion,
-      "org.scalameta" %% "munit"       % MUnitVersion % Test,
-      "org.specs2" %% "specs2-core" % Specs2Version % Test,
-      "org.specs2" %% "specs2-mock" % Specs2Version % Test,
+      "org.scalameta" %% "munit"       % MUnitVersion  % Test,
+      "org.specs2"    %% "specs2-core" % Specs2Version % Test,
+      "org.specs2"    %% "specs2-mock" % Specs2Version % Test
     )
   )
