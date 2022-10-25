@@ -56,8 +56,6 @@ lazy val core = project
       /* "org.typelevel"            %% "cats-effect"                  % CatsEffectVersion, */
       "org.typelevel" %% "jawn-parser" % JawnVersion,
       "org.typelevel" %% "jawn-ast"    % JawnVersion,
-      "org.scalameta" %% "munit"       % MUnitVersion  % Test,
-      "org.specs2"    %% "specs2-core" % Specs2Version % Test,
-      "org.specs2"    %% "specs2-mock" % Specs2Version % Test
+      "org.scalameta" %% "munit"       % MUnitVersion % Test
     )
   )

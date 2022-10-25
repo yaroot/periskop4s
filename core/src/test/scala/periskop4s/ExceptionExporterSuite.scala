@@ -3,14 +3,11 @@ package periskop4s
 import java.time.ZonedDateTime
 import java.util.UUID
 
-import org.mockito.Mockito.*
-import org.specs2.mock.Mockito
-import org.specs2.mutable.Specification
 import org.typelevel.jawn.ast.JParser
 
 import scala.collection.immutable.Queue
 
-class ExceptionExporterSpec extends Specification with Mockito {
+class ExceptionExporterSuite extends munit.FunSuite {
 
   class FakeException(msg: String, cause: Throwable = null, stackTraceLine: Int = 1)
       extends RuntimeException(msg, cause) {
@@ -20,7 +17,7 @@ class ExceptionExporterSpec extends Specification with Mockito {
     )
   }
 
-  "dumps the response in chunks" >> {
+  test("exporter") {
     val uuid1 = UUID.fromString("c3c24195-27ae-4455-ba5a-7b504a7699a4")
     val uuid2 = UUID.fromString("f12feecd-7518-46c3-88a6-38d57804e81a")
     val uuid3 = UUID.fromString("ceeefdf5-cdee-4f1b-b139-b2c739d16dcf")
@@ -104,17 +101,16 @@ class ExceptionExporterSpec extends Specification with Mockito {
       )
     )
 
-    val collector  = smartMock[ExceptionCollector]
-    val targetUuid = UUID.randomUUID()
-    when(collector.getExceptionAggregates).thenReturn(exceptionAggregates)
-    when(collector.uuid).thenReturn(targetUuid)
+    val collector = new ExceptionCollector {
+      override def getExceptionAggregates: Seq[ExceptionAggregate] = exceptionAggregates
+    }
 
     val exporter = new ExceptionExporter(collector)
-    val rendered = exporter.render
 
-    JParser.parseUnsafe(rendered) ==== JParser.parseUnsafe(
+    val rendered = JParser.parseUnsafe(exporter.render)
+    val fixture  = JParser.parseUnsafe(
       s"""|{
-          | "target_uuid": "$targetUuid",
+          | "target_uuid": "${collector.uuid}",
           |  "aggregated_errors": [
           |    {
           |      "aggregation_key": "${exceptionAggregates(0).latestExceptions.head.aggregationKey}",
@@ -124,14 +120,14 @@ class ExceptionExporterSpec extends Specification with Mockito {
           |      "latest_errors": [
           |        {
           |          "error": {
-          |            "class": "periskop4s.ExceptionExporterSpec$$FakeException",
+          |            "class": "periskop4s.ExceptionExporterSuite$$FakeException",
           |            "message": "foo1",
           |            "stacktrace": [
           |              "kls.mthd(file:1)",
           |              "kls.mthd(file:2)"
           |            ],
           |            "cause": {
-          |              "class": "periskop4s.ExceptionExporterSpec$$FakeException",
+          |              "class": "periskop4s.ExceptionExporterSuite$$FakeException",
           |              "message": "foo1parent",
           |              "stacktrace": [
           |                "kls.mthd(file:1)",
@@ -155,14 +151,14 @@ class ExceptionExporterSpec extends Specification with Mockito {
           |        },
           |        {
           |          "error": {
-          |            "class": "periskop4s.ExceptionExporterSpec$$FakeException",
+          |            "class": "periskop4s.ExceptionExporterSuite$$FakeException",
           |            "message": "foo1",
           |            "stacktrace": [
           |              "kls.mthd(file:1)",
           |              "kls.mthd(file:2)"
           |            ],
           |            "cause": {
-          |              "class": "periskop4s.ExceptionExporterSpec$$FakeException",
+          |              "class": "periskop4s.ExceptionExporterSuite$$FakeException",
           |              "message": "foo1parent",
           |              "stacktrace": [
           |                "kls.mthd(file:1)",
@@ -186,7 +182,7 @@ class ExceptionExporterSpec extends Specification with Mockito {
           |        },
           |        {
           |          "error": {
-          |            "class": "periskop4s.ExceptionExporterSpec$$FakeException",
+          |            "class": "periskop4s.ExceptionExporterSuite$$FakeException",
           |            "message": "foo2",
           |            "stacktrace": [
           |              "kls.mthd(file:1)",
@@ -209,7 +205,7 @@ class ExceptionExporterSpec extends Specification with Mockito {
           |      "latest_errors": [
           |        {
           |          "error": {
-          |            "class": "periskop4s.ExceptionExporterSpec$$FakeException",
+          |            "class": "periskop4s.ExceptionExporterSuite$$FakeException",
           |            "message": "bar1",
           |            "stacktrace": [
           |              "kls.mthd(file:42)",
@@ -246,6 +242,7 @@ class ExceptionExporterSpec extends Specification with Mockito {
           |""".stripMargin
     )
 
+    assertEquals(rendered, fixture)
   }
 
 }
