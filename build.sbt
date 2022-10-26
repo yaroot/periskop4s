@@ -1,6 +1,7 @@
 lazy val root = project
   .in(file("."))
   .aggregate(core)
+  .settings(publishArtifact := false)
 
 val CatsEffectVersion = "3.3.7"
 val Http4sVersion     = "0.23.10"
