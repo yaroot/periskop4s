@@ -16,7 +16,7 @@ jobs:
           pwd
           curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/master/sbt > sbt && chmod 0755 sbt
           ./sbt -Djline.terminal=jline.UnsupportedTerminal scalafmtSbtCheck scalafmtCheck publishM2
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: local-m2
           path: /home/runner/.m2/repository
